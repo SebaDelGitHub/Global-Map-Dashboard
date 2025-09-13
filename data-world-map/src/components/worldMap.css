@@ -2,15 +2,36 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
   text-align: center;
 }
 
 .country-shape {
-	stroke: #666666;
-	stroke-width: 1;
+  stroke: #222;
+  stroke-width: 0.8;
+  transition: stroke 0.2s, fill 300ms ease;
+  cursor: pointer;
+  
+}
+
+.country-shape:hover {
+  stroke: #000;
+  stroke-width: 1.2;
+}
+
+.country-shape:active {
+  fill: #222 !important;
+  outline: none;
+}
+
+.country-shape:focus,
+.country-shape:focus-visible,
+.world-map-container svg:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.world-map-container svg, .country-shape {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .world-map-container {
@@ -20,4 +41,171 @@
   min-height: 70vh;
   width: 100%;
   padding-top: 2vh;
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Make the rendered SVG responsive and contained */
+.world-map-container svg {
+  width: 100%;
+  height: auto;
+  max-width: 1200px;
+  display: block;
+}
+
+/* Page-level container for a normal website layout */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  /* soft creamy background */
+  background: linear-gradient(180deg, #fbfbf9 0%, #f7f6f4 100%);
+  color: #0f172a;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Simple header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 24px auto;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-brand .logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(135deg,#60a5fa,#3b82f6);
+}
+
+.app-card {
+  background: #fffefb;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+  padding: 20px;
+  border: 1px solid rgba(2,6,23,0.04);
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Clean header style (centered title/subtitle) */
+.clean-header {
+  text-align: center;
+  margin-bottom: 18px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.clean-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0b1220;
+}
+
+.clean-header p {
+  margin: 6px 0 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* ValueBar clean pill */
+.valuebar-container {
+  display: block;
+}
+
+.valuebar-track {
+  border-radius: 999px;
+  overflow: hidden;
+  height: 40px;
+  border: 1px solid rgba(2,6,23,0.06);
+  transition: background-color 350ms ease, border-color 350ms ease;
+}
+
+.valuebar-segment {
+  flex: 1 1 0;
+  transition: background-color 350ms ease;
+}
+
+.valuebar-ticks .tick-labels {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: #374151;
+}
+
+.tick-mark {
+  width: 1px;
+  height: 10px;
+  background: rgba(15,23,42,0.08);
+}
+
+/* Palette swatches displayed as small circular groups */
+.palette-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.palette-swatch {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 6px;
+  align-items: center;
+  padding: 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.palette-swatch span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(2,6,23,0.08);
+}
+
+.palette-swatch {
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swatch-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.palette-swatch:hover .swatch-dot {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 26px rgba(2,6,23,0.12);
 }

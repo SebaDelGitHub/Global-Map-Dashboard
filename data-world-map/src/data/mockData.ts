@@ -1,7 +1,7 @@
 import type { CountryData } from "../types/CountryData";
 
 export const mockData: CountryData[] = [
-  { isoCode: "USA", name: "United States", value: 331 },
+  { isoCode: "USA", name: "United States of America", value: 331 },
   { isoCode: "CHN", name: "China", value: 1441 },
   { isoCode: "IND", name: "India", value: 1380 },
   { isoCode: "BRA", name: "Brazil", value: 213 },

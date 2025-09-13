@@ -1,6 +1,7 @@
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { feature } from "topojson-client";
 import type { FeatureCollection } from "geojson";
+import './worldMap.css';
 import worldData from "world-atlas/countries-110m.json";
 import type { CountryData, } from "../types/CountryData";
 import { blueScale } from "../types/Colors";
@@ -9,9 +10,10 @@ import "./worldMap.css";
 interface WorldMapProps {
   title: string;
   data: CountryData[];
+  colors?: string[];
 }
 
-export default function WorldMap({ title, data }: WorldMapProps) {
+export default function WorldMap({ title, data, colors }: WorldMapProps) {
   // TopoJSON -> GeoJSON (forzar tipo)
   const geoFeatures = feature(
     worldData as any,
@@ -32,20 +34,45 @@ export default function WorldMap({ title, data }: WorldMapProps) {
           {({ geographies }) =>
             geographies.map((geo: any) => {
               const props: any = geo.properties || {};
-              const iso = (props.ISO_A3 || props.iso_a3 || props.id || props.iso) as string | undefined;
-              const geoName = (props.name || props.NAME || props.ADMIN) as string | undefined;
 
-              const country = data.find(
-                (c) =>
-                  (iso && c.isoCode && c.isoCode.toUpperCase() === String(iso).toUpperCase()) ||
-                  (geoName && c.name === geoName)
-              );
+              // Gather possible ISO and name candidates from topojson properties
+              const isoCandidates = [
+                props.ISO_A3,
+                props.iso_a3,
+                props.ADM0_A3,
+                props.adm0_a3,
+                props.ISO_A2,
+                props.iso_a2,
+                props.id,
+                props.iso,
+              ]
+                .filter(Boolean)
+                .map((s: any) => String(s).toUpperCase());
+
+              const geoNameCandidates = [props.name, props.NAME, props.ADMIN, props.formal_en]
+                .filter(Boolean)
+                .map((s: any) => String(s).toLowerCase());
+
+              const displayName = props.name || props.NAME || props.ADMIN || props.formal_en || props.id;
+
+              const country = data.find((c) => {
+                const isoCode = c.isoCode ? String(c.isoCode).toUpperCase() : undefined;
+                const countryName = c.name ? String(c.name).toLowerCase() : undefined;
+
+                // Match by ISO codes (exact)
+                if (isoCode && isoCandidates.includes(isoCode)) return true;
+
+                // Match by name (case-insensitive, allow contains)
+                if (countryName && geoNameCandidates.some((g: string) => g === countryName || g.includes(countryName) || countryName.includes(g))) return true;
+
+                return false;
+              });
 
               let fillColor = '#CCCCCC'; // gris por defecto (no data)
               let value = 0;
               if (country) {
                 value = country.value ?? 0;
-                fillColor = getColorByValue(value, maxValue);
+                fillColor = getColorByValue(value, maxValue, colors);
               }
 
               return (
@@ -53,13 +80,8 @@ export default function WorldMap({ title, data }: WorldMapProps) {
                   key={geo.rsmKey}
                   geography={geo}
                   fill={fillColor}
-                  onClick={() => alert(`${geoName ?? props.name ?? "Unknown"}: ${value}`)}
+                  onClick={() => alert(`${displayName ?? 'Unknown'}: ${value}`)}
                   className="country-shape"
-                  style={{
-                    default: { outline: "none" },
-                    hover: { fill: "#999", outline: "none" },
-                    pressed: { fill: "#222", outline: "none" },
-                  }}
                 />
               );
             })
@@ -71,13 +93,14 @@ export default function WorldMap({ title, data }: WorldMapProps) {
 }
 
 // Función para obtener el color según el valor
-function getColorByValue(value: number, max: number): string {
+function getColorByValue(value: number, max: number, palette?: string[]): string {
   if (value === 0) return '#CCCCCC'; // gris = No data
-  if (max === 0) return blueScale[0];
+  const colors = palette && palette.length === 5 ? palette : blueScale;
+  if (max === 0) return colors[0];
   const step = max / 5;
-  if (value <= step) return blueScale[0];
-  if (value <= step * 2) return blueScale[1];
-  if (value <= step * 3) return blueScale[2];
-  if (value <= step * 4) return blueScale[3];
-  return blueScale[4];
+  if (value <= step) return colors[0];
+  if (value <= step * 2) return colors[1];
+  if (value <= step * 3) return colors[2];
+  if (value <= step * 4) return colors[3];
+  return colors[4];
 }
