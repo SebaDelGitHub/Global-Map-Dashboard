@@ -1,4 +1,5 @@
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import { useState, useRef, useEffect } from 'react';
 import { feature } from "topojson-client";
 import type { FeatureCollection } from "geojson";
 import './worldMap.css';
@@ -14,6 +15,13 @@ interface WorldMapProps {
 }
 
 export default function WorldMap({ title, data, colors }: WorldMapProps) {
+  const [tooltipText, setTooltipText] = useState<string | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Ensure tooltip is hidden initially
+    if (tooltipRef.current) tooltipRef.current.style.display = 'none';
+  }, []);
   // TopoJSON -> GeoJSON (forzar tipo)
   const geoFeatures = feature(
     worldData as any,
@@ -80,14 +88,37 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
                   key={geo.rsmKey}
                   geography={geo}
                   fill={fillColor}
-                  onClick={() => alert(`${displayName ?? 'Unknown'}: ${value}`)}
                   className="country-shape"
+                  onMouseEnter={(ev: any) => {
+                    const text = `${displayName ?? 'Unknown'}: ${value}`;
+                    setTooltipText(text);
+                    if (tooltipRef.current) {
+                      tooltipRef.current.style.left = `${ev.clientX + 12}px`;
+                      tooltipRef.current.style.top = `${ev.clientY + 12}px`;
+                      tooltipRef.current.style.display = 'block';
+                    }
+                  }}
+                  onMouseMove={(ev: any) => {
+                    // Update position directly on the DOM to avoid re-renders
+                    if (tooltipRef.current) {
+                      tooltipRef.current.style.left = `${ev.clientX + 12}px`;
+                      tooltipRef.current.style.top = `${ev.clientY + 12}px`;
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    setTooltipText(null);
+                    if (tooltipRef.current) tooltipRef.current.style.display = 'none';
+                  }}
                 />
               );
             })
           }
         </Geographies>
       </ComposableMap>
+
+      <div ref={tooltipRef} className="map-tooltip" aria-hidden style={{ position: 'fixed' }}>
+        {tooltipText}
+      </div>
     </div>
   );
 }

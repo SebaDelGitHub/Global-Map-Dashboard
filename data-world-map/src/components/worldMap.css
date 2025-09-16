@@ -209,3 +209,17 @@
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 10px 26px rgba(2,6,23,0.12);
 }
+
+/* Tooltip for map country info */
+.map-tooltip {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  background: rgba(2,6,23,0.92);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+  transform: translateZ(0);
+}
