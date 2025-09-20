@@ -31,7 +31,7 @@ export default function Home() {
     <div className="page-wrapper">
       <div className="page-container">
         <header className="clean-header">
-          <h1>Interactive World Map Data</h1>
+          <h1>Global Map Dashboard</h1>
         </header>
 
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, gap: 12, flexWrap: 'wrap' }}>
