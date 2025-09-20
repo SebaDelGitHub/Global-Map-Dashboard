@@ -28,6 +28,9 @@ export default function HelpModal({ isOpen, onClose }: Props) {
               Next, upload the completed <code>.csv</code> using the <em>Upload CSV</em> button.
             </li>
             <li>
+              You can edit the map title directly — click the title area, type your text, and press Enter or click outside to save.
+            </li>
+            <li>
               Finally, export your map as a <code>PNG</code> image.
             </li>
           </ol>

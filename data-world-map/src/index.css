@@ -61,3 +61,8 @@ h1 {
 .btn-primary { background: var(--accent); color: #ffffff; }
 .btn-ghost { background: transparent; color: var(--text); border-color: var(--card-border); }
 .btn:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.12); }
+
+/* GitHub banner */
+.github-banner { display:flex; justify-content:center; padding:12px 0 6px; margin-top: 14px; background: transparent; border-top: 1px solid rgba(2,6,23,0.03); }
+.github-banner a { display:inline-flex; align-items:center; gap:6px; color: #344e54; text-decoration:none; font-weight:700; font-size:13px; }
+.github-banner a:hover { opacity:0.95; }
