@@ -45,7 +45,7 @@ export default function ButtonCSV({ onUpload }: Props) {
   return (
     <label style={{ display: 'inline-block' }}>
       <input ref={inputRef} type="file" accept=".csv,text/csv" onChange={handleFile} style={{ display: 'none' }} />
-      <button type="button" onClick={() => inputRef.current?.click()}>Upload CSV</button>
+      <button type="button" className="btn btn-primary" onClick={() => inputRef.current?.click()}>Upload CSV</button>
       {error && (
         <p style={{ color: '#b00020', marginTop: 8, fontSize: 13 }}>{error}</p>
       )}

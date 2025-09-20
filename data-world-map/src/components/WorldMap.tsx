@@ -12,10 +12,13 @@ interface WorldMapProps {
   title: string;
   data: CountryData[];
   colors?: string[];
+  onTitleChange?: (newTitle: string) => void;
 }
 
-export default function WorldMap({ title, data, colors }: WorldMapProps) {
+export default function WorldMap({ title, data, colors, onTitleChange }: WorldMapProps) {
   const [tooltipText, setTooltipText] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(title);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [internalData, setInternalData] = useState<CountryData[]>(data);
 
@@ -39,12 +42,24 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
   return (
     <div className="world-map-container">
       <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-        <h2 className="world-map-title">{title}</h2>
+        {editing ? (
+          <input
+            className="world-map-title"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={() => { setEditing(false); onTitleChange?.(draft); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { setEditing(false); onTitleChange?.(draft); } }}
+            autoFocus
+            style={{ fontSize: '1.5rem', fontWeight: 600, textAlign: 'center', border: 'none', background: 'transparent' }}
+          />
+        ) : (
+          <h2 className="world-map-title" onClick={() => { setDraft(title); setEditing(true); }}>{title}</h2>
+        )}
       </div>
       <ComposableMap
-        projectionConfig={{ scale: 225, center: [0, 0] }}
-        width={1200}
-        height={600}
+        projectionConfig={{ scale: 235, center: [0, 0] }}
+        width={1400}
+        height={700}
       >
         <Geographies geography={geoFeatures}>
           {({ geographies }) =>

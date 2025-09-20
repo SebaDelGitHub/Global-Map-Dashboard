@@ -6,10 +6,13 @@ import { blueScale, warmScale, greenScale } from "../types/Colors";
 import ButtonCSV from '../components/ButtonCSV';
 import { mergeCsvRowsIntoMapData } from '../utils/mapMerge';
 import exportCardAsPng from '../utils/exportImage';
+import downloadEmptyCountriesCsv from '../utils/csvExport';
+import HelpModal from '../components/HelpModal';
 
 export default function Home() {
   const [palette, setPalette] = useState<string[]>(blueScale);
   const [mapData, setMapData] = useState(mockData);
+  const [title, setTitle] = useState('Example map');
   const max = Math.max(0, ...(mapData.map((d) => d.value ?? 0)));
 
   const handleCsvUpload = (rows: any[]) => {
@@ -22,6 +25,8 @@ export default function Home() {
     await exportCardAsPng(node, fileName, 3);
   };
 
+  const [showHelp, setShowHelp] = useState(false);
+
   return (
     <div className="page-wrapper">
       <div className="page-container">
@@ -29,7 +34,7 @@ export default function Home() {
           <h1>Interactive world map data</h1>
         </header>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, gap: 12, flexWrap: 'wrap' }}>
           <div className="palette-group">
             {[blueScale, warmScale, greenScale].map((group, gi) => {
               const mid = group[Math.floor(group.length / 2)];
@@ -41,23 +46,30 @@ export default function Home() {
               );
             })}
           </div>
-          <div style={{ marginLeft: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ marginLeft: 12, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
             <ButtonCSV onUpload={handleCsvUpload} />
-            <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm" onClick={() => downloadPng('map-card.png')}>Download PNG</button>
+            <button className="btn btn-primary" onClick={() => downloadEmptyCountriesCsv('countries-template.csv')}>Download CSV Template</button>
+            <button className="btn btn-primary" onClick={() => downloadPng('map-card.png')}>Download PNG</button>
+            <button className="btn btn-primary" onClick={() => setShowHelp(true)}>How to use?</button>
           </div>
         </div>
 
         <div id="app-card" className="app-card">
-          <div style={{ marginTop: 8 }}>
-            <WorldMap title="Example map" data={mapData} colors={palette} />
+            <div style={{ marginTop: 8 }}>
+            <WorldMap title={title} data={mapData} colors={palette} onTitleChange={setTitle} />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-            <div style={{ width: '60%' }}>
+            <div style={{ width: '70%' }}>
               <ValueBar max={max} colors={palette} />
             </div>
           </div>
         </div>
+        <HelpModal
+          isOpen={showHelp}
+          onClose={() => setShowHelp(false)}
+          onDownloadCsv={() => downloadEmptyCountriesCsv('countries-template.csv')}
+        />
       </div>
     </div>
   );

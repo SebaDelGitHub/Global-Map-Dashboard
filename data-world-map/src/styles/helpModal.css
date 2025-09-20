@@ -1,0 +1,28 @@
+.help-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.help-card {
+  background: var(--card-bg, #fff);
+  color: var(--text, #091421);
+  width: 420px;
+  max-width: calc(100% - 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.15);
+  padding: 16px;
+}
+
+.help-header { display:flex; align-items:center; justify-content:space-between; }
+.help-header h2 { margin:0; font-size:1.1rem; }
+.help-close { background:transparent; border:0; font-size:1.4rem; cursor:pointer; }
+
+.help-body { margin-top: 12px; font-size:0.95rem; }
+.help-body ol { padding-left: 18px; }
+.help-note { margin-top: 10px; font-size:0.9rem; color: #4a5568; }
+
