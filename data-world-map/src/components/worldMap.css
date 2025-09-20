@@ -210,7 +210,6 @@
   box-shadow: 0 10px 26px rgba(2,6,23,0.12);
 }
 
-/* Tooltip for map country info */
 .map-tooltip {
   position: fixed;
   z-index: 9999;

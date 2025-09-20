@@ -3,10 +3,24 @@ import WorldMap from "../components/WorldMap";
 import { mockData } from "../data/mockData";
 import { ValueBar } from "../components/ValueBar";
 import { blueScale, warmScale, greenScale } from "../types/Colors";
+import ButtonCSV from '../components/ButtonCSV';
+import { mergeCsvRowsIntoMapData } from '../utils/mapMerge';
+import exportCardAsPng from '../utils/exportImage';
 
 export default function Home() {
-  const max = Math.max(0, ...(mockData.map((d) => d.value ?? 0)));
   const [palette, setPalette] = useState<string[]>(blueScale);
+  const [mapData, setMapData] = useState(mockData);
+  const max = Math.max(0, ...(mapData.map((d) => d.value ?? 0)));
+
+  const handleCsvUpload = (rows: any[]) => {
+    setMapData(prev => mergeCsvRowsIntoMapData(prev, rows));
+  };
+
+  const downloadPng = async (fileName = 'map-card.png') => {
+    const node = document.getElementById('app-card');
+    if (!node) return;
+    await exportCardAsPng(node, fileName, 3);
+  };
 
   return (
     <div className="page-wrapper">
@@ -27,11 +41,15 @@ export default function Home() {
               );
             })}
           </div>
+          <div style={{ marginLeft: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
+            <ButtonCSV onUpload={handleCsvUpload} />
+            <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm" onClick={() => downloadPng('map-card.png')}>Download PNG</button>
+          </div>
         </div>
 
-        <div className="app-card">
+        <div id="app-card" className="app-card">
           <div style={{ marginTop: 8 }}>
-            <WorldMap title="Example map" data={mockData} colors={palette} />
+            <WorldMap title="Example map" data={mapData} colors={palette} />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>

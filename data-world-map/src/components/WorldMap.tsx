@@ -17,6 +17,12 @@ interface WorldMapProps {
 export default function WorldMap({ title, data, colors }: WorldMapProps) {
   const [tooltipText, setTooltipText] = useState<string | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const [internalData, setInternalData] = useState<CountryData[]>(data);
+
+  // keep internal data synced when parent prop changes
+  useEffect(() => {
+    setInternalData(data);
+  }, [data]);
 
   useEffect(() => {
     // Ensure tooltip is hidden initially
@@ -28,11 +34,13 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
     (worldData as any).objects.countries
   ) as unknown as FeatureCollection;
 
-  const maxValue = data.reduce((max, c) => c.value && c.value > max ? c.value : max, 0);
+  const maxValue = internalData.reduce((max, c) => c.value && c.value > max ? c.value : max, 0);
 
   return (
     <div className="world-map-container">
-  <h2 className="world-map-title">{title}</h2>
+      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+        <h2 className="world-map-title">{title}</h2>
+      </div>
       <ComposableMap
         projectionConfig={{ scale: 225, center: [0, 0] }}
         width={1200}
@@ -63,7 +71,7 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
 
               const displayName = props.name || props.NAME || props.ADMIN || props.formal_en || props.id;
 
-              const country = data.find((c) => {
+              const country = internalData.find((c) => {
                 const isoCode = c.isoCode ? String(c.isoCode).toUpperCase() : undefined;
                 const countryName = c.name ? String(c.name).toLowerCase() : undefined;
 
@@ -76,7 +84,7 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
                 return false;
               });
 
-              let fillColor = '#CCCCCC'; // gris por defecto (no data)
+              let fillColor = '#CCCCCC'; // grey default (no data)
               let value = 0;
               if (country) {
                 value = country.value ?? 0;
@@ -99,7 +107,6 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
                     }
                   }}
                   onMouseMove={(ev: any) => {
-                    // Update position directly on the DOM to avoid re-renders
                     if (tooltipRef.current) {
                       tooltipRef.current.style.left = `${ev.clientX + 12}px`;
                       tooltipRef.current.style.top = `${ev.clientY + 12}px`;
@@ -123,9 +130,9 @@ export default function WorldMap({ title, data, colors }: WorldMapProps) {
   );
 }
 
-// Función para obtener el color según el valor
+// Function to get the color based on the value
 function getColorByValue(value: number, max: number, palette?: string[]): string {
-  if (value === 0) return '#CCCCCC'; // gris = No data
+  if (value === 0) return '#CCCCCC'; // grey = No data
   const colors = palette && palette.length === 5 ? palette : blueScale;
   if (max === 0) return colors[0];
   const step = max / 5;
